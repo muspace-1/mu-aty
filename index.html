@@ -1,101 +1,200 @@
-export default {
-  async fetch(request, env, ctx) {
-    const html = `<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="th">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>สมุดบัญชีร้าน AhTao MuSpace 🌸✨</title>
+    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Chart.js สำหรับกราฟ -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- FontAwesome ไอคอน -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        body { font-family: 'Kanit', sans-serif; background-color: #fcf8f2; color: #5a4a5e; min-height: 100vh; }
-        .card-notebook { background: #ffffff; border-radius: 2rem; box-shadow: 0 8px 20px rgba(255, 182, 193, 0.15); border: 2px solid #fff0f5; }
-        .btn-pastel-pink { background: linear-gradient(135deg, #ffb6c1, #ff9bb3); color: white; }
-        .btn-pastel-pink:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(255, 182, 193, 0.4); }
-        .animate-float { animation: float 3s ease-in-out infinite; }
-        @keyframes float { 0% { transform: translateY(0px); } 50% { transform: translateY(-6px); } 100% { transform: translateY(0px); } }
+        body {
+            font-family: 'Kanit', sans-serif;
+            background-color: #fcf8f2; /* สีครีมละมุน */
+            background-image: radial-gradient(#e6d5c3 1px, transparent 1px);
+            background-size: 20px 20px; /* ลายจุดสมุดโน้ต */
+            color: #5a4a5e;
+            min-height: 100vh;
+        }
+
+        .card-notebook {
+            background: #ffffff;
+            border-radius: 2rem;
+            box-shadow: 0 10px 25px rgba(244, 180, 217, 0.2);
+            border: 3px solid #fce4ec;
+        }
+
+        .btn-pastel-pink {
+            background: linear-gradient(135deg, #ffb6c1, #ff9bb3);
+            color: white;
+            transition: all 0.2s;
+        }
+        .btn-pastel-pink:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(255, 182, 193, 0.4);
+        }
+
+        /* แอนิเมชันดุ๊กดิ๊ก */
+        @keyframes float {
+            0% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-6px) rotate(3deg); }
+            100% { transform: translateY(0px) rotate(0deg); }
+        }
+        .animate-float {
+            animation: float 3s ease-in-out infinite;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #fcf8f2;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #ffb6c1;
+            border-radius: 4px;
+        }
     </style>
 </head>
-<body class="py-6 px-4">
+<body class="py-8 px-4">
 
-    <div class="max-w-md mx-auto">
+    <div class="max-w-md mx-auto relative">
         
-        <!-- กรอบชื่อร้านแบบทึบ (Solid Header) -->
+        <!-- กรอบชื่อร้านแบบทึบ (Solid Header) สไตล์เกาหลี -->
         <div class="bg-[#ffb6c1] text-white p-6 rounded-[2rem] shadow-lg mb-6 text-center transform -rotate-1 relative overflow-hidden">
-            <div class="absolute top-2 left-2 text-2xl animate-float">🐱</div>
+            <div class="absolute top-2 left-2 text-2xl animate-float">🐱✨</div>
+            <div class="absolute bottom-2 right-2 text-2xl animate-float" style="animation-delay: 1.5s;">💖</div>
             <h1 class="text-2xl font-bold tracking-wide">AhTao MuSpace</h1>
-            <p class="text-sm opacity-90 font-medium italic">Accounting Book 🌸</p>
+            <p class="text-sm opacity-90 font-medium italic mt-1">“ ยิ่งเรารักษาเงิน เงินก็ยิ่งรักเรานะคนเก่ง 🌸 ”</p>
         </div>
 
-        <!-- กล่องสรุปยอด -->
+        <!-- กล่องสรุปยอดรวม (Dashboard) -->
         <div class="grid grid-cols-3 gap-3 mb-6">
             <div class="card-notebook p-3 text-center bg-[#fff0f5]">
-                <div class="text-[10px] text-[#d87093] font-bold">รายรับ</div>
-                <div id="total-income" class="text-md font-bold text-[#ff69b4]">0</div>
+                <div class="text-[11px] text-[#d87093] font-bold mb-1">รายรับรวม</div>
+                <div id="total-income" class="text-md font-bold text-[#ff69b4]">0.-</div>
             </div>
             <div class="card-notebook p-3 text-center bg-[#f0f8ff]">
-                <div class="text-[10px] text-[#4682b4] font-bold">รายจ่าย</div>
-                <div id="total-expense" class="text-md font-bold text-[#1e90ff]">0</div>
+                <div class="text-[11px] text-[#4682b4] font-bold mb-1">รายจ่ายรวม</div>
+                <div id="total-expense" class="text-md font-bold text-[#1e90ff]">0.-</div>
             </div>
             <div class="card-notebook p-3 text-center bg-[#fdf5e6]">
-                <div class="text-[10px] text-[#daa520] font-bold">คงเหลือ</div>
-                <div id="total-balance" class="text-md font-bold text-[#e6ac00]">0</div>
+                <div class="text-[11px] text-[#daa520] font-bold mb-1">คงเหลือ</div>
+                <div id="total-balance" class="text-md font-bold text-[#e6ac00]">0.-</div>
             </div>
         </div>
 
-        <!-- ฟอร์มบันทึก -->
+        <!-- ฟอร์มบันทึกรายการ -->
         <div class="card-notebook p-5 mb-6">
+            <h2 class="text-md font-bold text-[#d87093] mb-3 flex items-center gap-2">
+                <i class="fa-solid fa-pen-fancy"></i> จดบันทึกวันนี้
+            </h2>
             <form id="transaction-form" onsubmit="addTransaction(event)" class="space-y-3">
-                <div class="grid grid-cols-2 gap-2">
-                    <label class="flex items-center justify-center gap-2 p-2 rounded-xl cursor-pointer text-sm font-bold border-2 border-[#ffb6c1] bg-[#fff0f5] text-[#d87093] has-[:checked]:bg-[#ffb6c1] has-[:checked]:text-white">
-                        <input type="radio" name="type" value="income" class="hidden" checked> 💰 รับ
-                    </label>
-                    <label class="flex items-center justify-center gap-2 p-2 rounded-xl cursor-pointer text-sm font-bold border-2 border-[#add8e6] bg-[#f0f8ff] text-[#4682b4] has-[:checked]:bg-[#add8e6] has-[:checked]:text-white">
-                        <input type="radio" name="type" value="expense" class="hidden"> 💸 จ่าย
-                    </label>
+                <div>
+                    <label class="block text-xs font-bold text-[#8c7894] mb-1">ประเภทรายการ</label>
+                    <div class="grid grid-cols-2 gap-2">
+                        <label class="flex items-center justify-center gap-2 p-2 border-2 border-[#ffb6c1] rounded-xl cursor-pointer text-sm font-bold text-[#d87093] bg-[#fff0f5] has-[:checked]:bg-[#ffb6c1] has-[:checked]:text-white transition-all">
+                            <input type="radio" name="type" value="income" class="hidden" checked> 💰 รายรับ
+                        </label>
+                        <label class="flex items-center justify-center gap-2 p-2 border-2 border-[#add8e6] rounded-xl cursor-pointer text-sm font-bold text-[#4682b4] bg-[#f0f8ff] has-[:checked]:bg-[#add8e6] has-[:checked]:text-white transition-all">
+                            <input type="radio" name="type" value="expense" class="hidden"> 💸 รายจ่าย
+                        </label>
+                    </div>
                 </div>
-                <input type="text" id="desc" required placeholder="ชื่อรายการ..." class="w-full p-3 text-sm bg-[#faf5f0] border-2 border-[#f3d9ce] rounded-xl">
-                <div class="grid grid-cols-2 gap-2">
-                    <select id="category" class="p-3 text-sm bg-[#faf5f0] border-2 border-[#f3d9ce] rounded-xl">
-                        <option value="ของกิน 🍔">ของกิน</option>
-                        <option value="เดินทาง 🚗">เดินทาง</option>
-                        <option value="ช้อปปิ้ง 🛍️">ช้อปปิ้ง</option>
-                        <option value="รายรับ 💵">รายรับ</option>
-                    </select>
-                    <input type="number" id="amount" required placeholder="จำนวนเงิน" class="w-full p-3 text-sm bg-[#faf5f0] border-2 border-[#f3d9ce] rounded-xl">
+                <div>
+                    <label class="block text-xs font-bold text-[#8c7894] mb-1">ชื่อรายการ</label>
+                    <input type="text" id="desc" required placeholder="เช่น ค่าชาไข่มุก, เงินเดือนออก" class="w-full p-2.5 text-sm bg-[#faf5f0] border-2 border-[#f3d9ce] rounded-xl focus:outline-none focus:border-[#ffb6c1]">
                 </div>
-                <button type="submit" class="w-full btn-pastel-pink py-3 rounded-xl font-bold text-sm shadow-md">บันทึกรายการ ✨</button>
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-xs font-bold text-[#8c7894] mb-1">หมวดหมู่</label>
+                        <select id="category" class="w-full p-2.5 text-sm bg-[#faf5f0] border-2 border-[#f3d9ce] rounded-xl focus:outline-none focus:border-[#ffb6c1]">
+                            <option value="ของกิน 🍔">ของกิน 🍔</option>
+                            <option value="เดินทาง 🚗">เดินทาง 🚗</option>
+                            <option value="ช้อปปิ้ง 🛍️">ช้อปปิ้ง 🛍️</option>
+                            <option value="รายรับ 💵">รายรับ 💵</option>
+                            <option value="อื่นๆ ✨">อื่นๆ ✨</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-[#8c7894] mb-1">จำนวนเงิน (บาท)</label>
+                        <input type="number" id="amount" required step="any" placeholder="0.00" class="w-full p-2.5 text-sm bg-[#faf5f0] border-2 border-[#f3d9ce] rounded-xl focus:outline-none focus:border-[#ffb6c1]">
+                    </div>
+                </div>
+                <button type="submit" class="w-full btn-pastel-pink py-3 rounded-xl font-bold text-sm shadow-sm flex items-center justify-center gap-2 mt-2">
+                    <i class="fa-solid fa-heart"></i> บันทึกรายการ
+                </button>
             </form>
         </div>
 
-        <div class="card-notebook p-5 mb-12">
-            <h2 class="text-sm font-bold text-[#d87093] mb-3">รายการล่าสุด 🐾</h2>
-            <div id="transaction-list" class="space-y-2 max-h-64 overflow-y-auto"></div>
+        <!-- กราฟสรุปยอด -->
+        <div class="card-notebook p-5 mb-6">
+            <h2 class="text-md font-bold text-[#d87093] mb-3 flex items-center gap-2">
+                <i class="fa-solid fa-chart-pie"></i> สัดส่วนรายรับ-รายจ่าย
+            </h2>
+            <div class="relative h-48 flex items-center justify-center">
+                <canvas id="expenseChart"></canvas>
+            </div>
         </div>
+
+        <!-- รายการล่าสุด -->
+        <div class="card-notebook p-5 mb-12">
+            <div class="flex justify-between items-center mb-3">
+                <h2 class="text-md font-bold text-[#d87093] flex items-center gap-2">
+                    <i class="fa-solid fa-list-ul"></i> ประวัติรายการ
+                </h2>
+                <button onclick="clearData()" class="text-xs text-red-400 hover:text-red-600 font-bold">ล้างข้อมูลทั้งหมด</button>
+            </div>
+            <div id="transaction-list" class="space-y-2 max-h-60 overflow-y-auto pr-1">
+                <!-- รายการจะถูกเพิ่มตรงนี้ด้วย JS -->
+            </div>
+        </div>
+
     </div>
 
     <script>
+        // ระบบกันพัง: ตรวจสอบข้อมูลใน LocalStorage ป้องกันข้อมูลเสีย
         let transactions = [];
         try {
             const saved = localStorage.getItem('ahtao_acc_data');
             transactions = saved ? JSON.parse(saved) : [];
-        } catch(e) { transactions = []; }
+        } catch(e) {
+            transactions = [];
+        }
+
+        let myChart = null;
+
+        function init() {
+            renderTransactions();
+            updateSummary();
+            renderChart();
+        }
 
         function addTransaction(e) {
             e.preventDefault();
+            const type = document.querySelector('input[name="type"]:checked').value;
+            const desc = document.getElementById('desc').value;
+            const category = document.getElementById('category').value;
             const amount = parseFloat(document.getElementById('amount').value);
-            if (isNaN(amount) || amount <= 0) { alert("กรุณาระบุจำนวนเงินที่ถูกต้องค่ะ 🌸"); return; }
+
+            if (isNaN(amount) || amount <= 0) {
+                alert("กรุณาระบุจำนวนเงินที่ถูกต้องค่ะ 🌸");
+                return;
+            }
 
             const newItem = {
                 id: Date.now(),
-                type: document.querySelector('input[name="type"]:checked').value,
-                desc: document.getElementById('desc').value,
-                category: document.getElementById('category').value,
-                amount: amount,
-                date: new Date().toLocaleDateString('th-TH', {day:'numeric', month:'short'})
+                type,
+                desc,
+                category,
+                amount,
+                date: new Date().toLocaleDateString('th-TH', { day: 'numeric', month: 'short' })
             };
 
             transactions.unshift(newItem);
@@ -103,43 +202,125 @@ export default {
             document.getElementById('transaction-form').reset();
         }
 
-        function saveAndRefresh() {
-            localStorage.setItem('ahtao_acc_data', JSON.stringify(transactions));
-            render();
+        function deleteTransaction(id) {
+            transactions = transactions.filter(item => item.id !== id);
+            saveAndRefresh();
         }
 
-        function render() {
+        function clearData() {
+            if(confirm("ต้องการล้างประวัติทั้งหมดจริงหรือเปล่าคะ?")) {
+                transactions = [];
+                saveAndRefresh();
+            }
+        }
+
+        function saveAndRefresh() {
+            try {
+                localStorage.setItem('ahtao_acc_data', JSON.stringify(transactions));
+            } catch(e) {
+                console.error("Save error", e);
+            }
+            renderTransactions();
+            updateSummary();
+            renderChart();
+        }
+
+        function renderTransactions() {
             const listEl = document.getElementById('transaction-list');
+            if (transactions.length === 0) {
+                listEl.innerHTML = `<p class="text-center text-xs text-gray-400 py-4">ยังไม่มีรายการบันทึก เริ่มจดกันเลย! 🌸</p>`;
+                return;
+            }
+
             let html = '';
-            let income = 0, expense = 0;
+            transactions.forEach(item => {
+                const isIncome = item.type === 'income';
+                const sign = isIncome ? '+' : '-';
+                const colorClass = isIncome ? 'text-[#ff69b4]' : 'text-[#4682b4]';
+                const bgClass = isIncome ? 'bg-[#fff0f5]' : 'bg-[#f0f8ff]';
+
+                html += `
+                    <div class="flex justify-between items-center p-2.5 ${bgClass} rounded-xl border border-[#fce4ec]">
+                        <div class="flex items-center gap-2">
+                            <span class="text-xs bg-white px-2 py-1 rounded-lg text-[#8c7894] font-medium">${item.date}</span>
+                            <div>
+                                <div class="text-sm font-bold text-[#5a4a5e]">${item.desc}</div>
+                                <div class="text-[11px] text-[#8c7894]">${item.category}</div>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-3">
+                            <span class="text-sm font-bold ${colorClass}">${sign}${item.amount.toLocaleString()}.-</span>
+                            <button onclick="deleteTransaction(${item.id})" class="text-gray-300 hover:text-red-400 text-xs"><i class="fa-solid fa-trash"></i></button>
+                        </div>
+                    </div>
+                `;
+            });
+            listEl.innerHTML = html;
+        }
+
+        function updateSummary() {
+            let income = 0;
+            let expense = 0;
 
             transactions.forEach(item => {
-                if(item.type === 'income') income += item.amount; else expense += item.amount;
-                
-                html += \`
-                    <div class="flex justify-between items-center p-3 rounded-xl border border-pink-50 \${item.type === 'income' ? 'bg-pink-50' : 'bg-blue-50'}">
-                        <div class="text-xs">
-                            <span class="font-bold text-[#5a4a5e]">\${item.desc}</span><br>
-                            <span class="text-[10px] opacity-75">\${item.category} • \${item.date}</span>
-                        </div>
-                        <div class="text-sm font-bold \${item.type === 'income' ? 'text-pink-500' : 'text-blue-500'}">
-                            \${item.type === 'income' ? '+' : '-'}\${item.amount.toLocaleString()}
-                        </div>
-                    </div>\`;
+                if (item.type === 'income') income += item.amount;
+                else expense += item.amount;
             });
-            listEl.innerHTML = html || '<p class="text-center text-xs opacity-50">ยังไม่มีรายการค่ะ 🐱</p>';
-            
-            document.getElementById('total-income').textContent = income.toLocaleString();
-            document.getElementById('total-expense').textContent = expense.toLocaleString();
-            document.getElementById('total-balance').textContent = (income - expense).toLocaleString();
+
+            const balance = income - expense;
+
+            document.getElementById('total-income').textContent = income.toLocaleString() + '.-';
+            document.getElementById('total-expense').textContent = expense.toLocaleString() + '.-';
+            document.getElementById('total-balance').textContent = balance.toLocaleString() + '.-';
         }
-        render();
+
+        function renderChart() {
+            let income = 0;
+            let expense = 0;
+
+            transactions.forEach(item => {
+                if (item.type === 'income') income += item.amount;
+                else expense += item.amount;
+            });
+
+            const ctx = document.getElementById('expenseChart').getContext('2d');
+            
+            if (myChart) {
+                myChart.destroy();
+            }
+
+            myChart = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['รายรับ', 'รายจ่าย'],
+                    datasets: [{
+                        data: [income > 0 || expense > 0 ? income : 1, expense],
+                        backgroundColor: ['#ffb6c1', '#add8e6'],
+                        borderWidth: 2,
+                        borderColor: '#ffffff'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                font: {
+                                    family: 'Kanit',
+                                    size: 12
+                                },
+                                color: '#5a4a5e'
+                            }
+                        }
+                    },
+                    cutout: '65%'
+                }
+            });
+        }
+
+        init();
     </script>
 </body>
-</html>`;
-
-    return new Response(html, {
-      headers: { "Content-Type": "text/html;charset=UTF-8" },
-    });
-  },
-};
+</html>
