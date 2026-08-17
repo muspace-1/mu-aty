@@ -92,7 +92,7 @@
 </head>
 <body class="py-8 px-4 flex items-center justify-center min-h-screen">
 
-    <!-- ตกแต่งหัวใจลอย (ทึบ) -->
+    <!-- ตกแต่งหัวใจลอย (ทึบ) 2 ขนาด -->
     <div class="solid-heart heart-md animate-float-1" style="top: 25%; left: 12%;"></div>
     <div class="solid-heart heart-sm animate-float-2" style="top: 60%; right: 15%;"></div>
     <div class="solid-heart heart-md animate-float-3" style="top: 80%; left: 20%;"></div>
@@ -148,18 +148,18 @@
             </div>
         </div>
 
-        <!-- กล่องสรุปยอดรวม -->
+        <!-- กล่องสรุปยอดรวม (รีเซ็ตและสรุปอัตโนมัติตามเดือนปัจจุบัน) -->
         <div class="grid grid-cols-3 gap-3">
             <div class="card-notebook p-3 text-center bg-[#fff0f5]">
-                <div class="text-[11px] text-[#d87093] font-bold mb-1">รายรับรวม</div>
+                <div class="text-[11px] text-[#d87093] font-bold mb-1">รายรับเดือนนี้</div>
                 <div id="total-income" class="text-md font-bold text-[#ff69b4]">0.-</div>
             </div>
             <div class="card-notebook p-3 text-center bg-[#f0f8ff]">
-                <div class="text-[11px] text-[#4682b4] font-bold mb-1">รายจ่ายรวม</div>
+                <div class="text-[11px] text-[#4682b4] font-bold mb-1">รายจ่ายเดือนนี้</div>
                 <div id="total-expense" class="text-md font-bold text-[#1e90ff]">0.-</div>
             </div>
             <div class="card-notebook p-3 text-center bg-[#fdf5e6]">
-                <div class="text-[11px] text-[#daa520] font-bold mb-1">คงเหลือ</div>
+                <div class="text-[11px] text-[#daa520] font-bold mb-1">คงเหลือเดือนนี้</div>
                 <div id="total-balance" class="text-md font-bold text-[#e6ac00]">0.-</div>
             </div>
         </div>
@@ -206,7 +206,7 @@
             </form>
         </div>
 
-        <!-- กราฟ & ปฏิทิน (กดสลับหน้าได้) -->
+        <!-- กราฟ & ปฏิทิน (กดสลับหน้าได้ + สรุปยอดใต้ปฏิทินย้อนหลัง 3 เดือน) -->
         <div class="card-notebook p-5">
             <div class="flex justify-between items-center mb-4">
                 <h2 class="text-md font-bold text-[#d87093] flex items-center gap-2">
@@ -224,20 +224,36 @@
                 <canvas id="expenseChart"></canvas>
             </div>
 
-            <!-- หน้าต่างปฏิทิน -->
-            <div id="view-calendar" class="hidden transition-opacity duration-300">
-                <div class="text-center text-xs font-bold text-[#d87093] mb-2" id="current-month">สิงหาคม 2026</div>
+            <!-- หน้าต่างปฏิทิน (พร้อมปุ่มเปลี่ยนเดือน และกล่องสรุปยอดใต้ปฏิทิน) -->
+            <div id="view-calendar" class="hidden transition-opacity duration-300 space-y-3">
+                <div class="flex justify-between items-center bg-[#faf5f0] px-3 py-1.5 rounded-xl">
+                    <button onclick="changeMonth(-1)" class="text-xs text-[#d87093] font-bold px-2 py-1 bg-white rounded-lg shadow-sm hover:bg-[#fff0f5]"><i class="fa-solid fa-chevron-left"></i> เดือนก่อน</button>
+                    <span class="text-xs font-bold text-[#d87093]" id="current-month-label">สิงหาคม 2026</span>
+                    <button onclick="changeMonth(1)" class="text-xs text-[#d87093] font-bold px-2 py-1 bg-white rounded-lg shadow-sm hover:bg-[#fff0f5]">เดือนถัดไป <i class="fa-solid fa-chevron-right"></i></button>
+                </div>
+                
                 <div class="grid grid-cols-7 gap-1 text-center text-[10px] text-[#8c7894] font-bold mb-1">
                     <div>อา.</div><div>จ.</div><div>อ.</div><div>พ.</div><div>พฤ.</div><div>ศ.</div><div>ส.</div>
                 </div>
                 <div id="calendar-grid" class="grid grid-cols-7 gap-1 text-center text-xs">
                     <!-- โหลดปฏิทินผ่าน JS -->
                 </div>
-                <div class="text-[10px] text-center mt-3 text-[#8c7894]">* คลิกที่วันที่เพื่อดูเฉพาะรายการวันนั้น</div>
+
+                <!-- กล่องสรุปยอดใต้ปฏิทินสำหรับเดือนที่เลือกดูย้อนหลัง -->
+                <div id="cal-month-summary" class="bg-[#fff0f5] border-2 border-[#fce4ec] p-3 rounded-xl text-center space-y-1">
+                    <div class="text-[11px] font-bold text-[#d87093]" id="summary-month-title">สรุปยอดประจำเดือน: -</div>
+                    <div class="grid grid-cols-3 gap-2 text-[11px] font-bold mt-1">
+                        <div class="bg-white p-1 rounded-lg shadow-xs text-[#ff69b4]">รับ: <span id="sum-inc">0</span></div>
+                        <div class="bg-white p-1 rounded-lg shadow-xs text-[#1e90ff]">จ่าย: <span id="sum-exp">0</span></div>
+                        <div class="bg-white p-1 rounded-lg shadow-xs text-[#e6ac00]">เหลือ: <span id="sum-bal">0</span></div>
+                    </div>
+                </div>
+
+                <div class="text-[10px] text-center text-[#8c7894]">* คลิกวันที่ในปฏิทินเพื่อกรองดูรายการเฉพาะวันนั้น</div>
             </div>
         </div>
 
-        <!-- ประวัติรายการ -->
+        <!-- ค้นหา กรองข้อมูล และประวัติรายการ -->
         <div class="card-notebook p-5 pb-10">
             <div class="flex justify-between items-center mb-3">
                 <h2 class="text-md font-bold text-[#d87093] flex items-center gap-2">
@@ -251,7 +267,7 @@
 
             <!-- ช่องค้นหา & กรอง -->
             <div class="grid grid-cols-2 gap-2 mb-3">
-                <input type="text" id="search-box" oninput="renderTransactions()" placeholder="🔍 ค้นหา..." class="p-2 text-xs bg-[#faf5f0] border-2 border-[#f3d9ce] rounded-xl">
+                <input type="text" id="search-box" oninput="renderTransactions()" placeholder="🔍 ค้นหาชื่อรายการ..." class="p-2 text-xs bg-[#faf5f0] border-2 border-[#f3d9ce] rounded-xl">
                 <select id="filter-box" onchange="renderTransactions()" class="p-2 text-xs bg-[#faf5f0] border-2 border-[#f3d9ce] rounded-xl">
                     <option value="all">ทั้งหมด</option>
                     <option value="income">เฉพาะรายรับ</option>
@@ -301,14 +317,25 @@
             checkAuth();
         }
 
-        // โครงสร้างข้อมูล
+        // โครงสร้างข้อมูล (จำกัดข้อมูลเก็บไว้ไม่เกิน 3 เดือนเพื่อความลื่นไหล)
         let transactions = JSON.parse(localStorage.getItem('ahtao_acc_data')) || [];
         let categories = JSON.parse(localStorage.getItem('ahtao_categories')) || ['ของกิน 🍔', 'เดินทาง 🚗', 'ช้อปปิ้ง 🛍️', 'รายรับ 💵', 'อื่นๆ ✨'];
         let goalData = JSON.parse(localStorage.getItem('ahtao_goal')) || { title: 'เป้าหมายเงินเก็บ', target: 5000 };
         let myChart = null;
-        let selectedFilterDate = null; // สำหรับปฏิทิน
+        let selectedFilterDate = null; 
+        
+        // ตัวแปรสำหรับคุมปฏิทินย้อนหลัง 3 เดือน
+        let calendarViewDate = new Date();
+
+        function cleanOldData() {
+            // ล้างข้อมูลที่เก่าเกิน 3 เดือนอัตโนมัติ เพื่อความลื่นไหลตามที่คุยกัน
+            const threeMonthsAgo = new Date();
+            threeMonthsAgo.setMonth(threeMonthsAgo.getMonth() - 3);
+            transactions = transactions.filter(t => t.timestamp >= threeMonthsAgo.getTime());
+        }
 
         function init() {
+            cleanOldData();
             renderCategories();
             renderGoal();
             renderTransactions();
@@ -345,6 +372,7 @@
         }
 
         function renderGoal() {
+            // คำนวณเป้าหมายจากยอดรวมปัจจุบัน
             let income = 0, expense = 0;
             transactions.forEach(i => { if(i.type === 'income') income += i.amount; else expense += i.amount; });
             let balance = income - expense;
@@ -375,7 +403,7 @@
                 category,
                 amount,
                 date: dateStr,
-                timestamp: now.getTime() // ใช้ระบุวันที่ในปฏิทิน
+                timestamp: now.getTime() 
             });
             saveAndRefresh();
             document.getElementById('transaction-form').reset();
@@ -405,6 +433,7 @@
         }
 
         function saveAndRefresh() {
+            cleanOldData();
             localStorage.setItem('ahtao_acc_data', JSON.stringify(transactions));
             renderTransactions();
             updateSummary();
@@ -423,20 +452,20 @@
                 let matchSearch = item.desc.toLowerCase().includes(searchKeyword) || item.category.toLowerCase().includes(searchKeyword);
                 let matchFilter = filterType === 'all' || item.type === filterType;
                 
-                // กรองตามวันที่กดปฏิทิน
                 let matchDate = true;
                 if(selectedFilterDate) {
-                    const itemDate = new Date(item.timestamp).getDate();
-                    matchDate = (itemDate === selectedFilterDate);
+                    const itemDateObj = new Date(item.timestamp);
+                    matchDate = (itemDateObj.getDate() === selectedFilterDate.getDate() && 
+                                 itemDateObj.getMonth() === selectedFilterDate.getMonth() && 
+                                 itemDateObj.getFullYear() === selectedFilterDate.getFullYear());
                 }
 
                 return matchSearch && matchFilter && matchDate;
             });
 
-            // แสดง/ซ่อน แถบแจ้งเตือนว่ากำลังกรองวันที่
             if(selectedFilterDate) {
                 ind.classList.remove('hidden');
-                document.getElementById('date-filter-text').innerText = `กำลังแสดงเฉพาะยอดวันที่ ${selectedFilterDate}`;
+                document.getElementById('date-filter-text').innerText = `กำลังแสดงเฉพาะยอดวันที่ ${selectedFilterDate.getDate()} ${selectedFilterDate.toLocaleDateString('th-TH', {month:'short'})}`;
             } else {
                 ind.classList.add('hidden');
             }
@@ -459,7 +488,7 @@
                             </div>
                         </div>
                         <div class="flex items-center gap-3">
-                            <span class="text-sm font-bold ${isIncome ? 'text-[#ff69b4]' : 'text-[#4682b4]'}">${isIncome ? '+' : '-'}${item.amount.toLocaleString()}.-</span>
+                            <span class="text-sm font-bold ${isIncome ? 'text-[#ff69b4] animate-pulse' : 'text-[#4682b4]'}">${isIncome ? '+' : '-'}${item.amount.toLocaleString()}.-</span>
                             <button onclick="deleteTransaction(${item.id})" class="text-gray-300 hover:text-red-400 text-xs"><i class="fa-solid fa-trash"></i></button>
                         </div>
                     </div>`;
@@ -467,11 +496,19 @@
             listEl.innerHTML = html;
         }
 
+        // สรุปยอดเฉพาะเดือนปัจจุบัน (รีเซ็ตอัตโนมัติเมื่อขึ้นเดือนใหม่)
         function updateSummary() {
+            const now = new Date();
+            const currentMonth = now.getMonth();
+            const currentYear = now.getFullYear();
+
             let income = 0, expense = 0;
             transactions.forEach(item => {
-                if (item.type === 'income') income += item.amount;
-                else expense += item.amount;
+                const itemDate = new Date(item.timestamp);
+                if (itemDate.getMonth() === currentMonth && itemDate.getFullYear() === currentYear) {
+                    if (item.type === 'income') income += item.amount;
+                    else expense += item.amount;
+                }
             });
             document.getElementById('total-income').textContent = income.toLocaleString() + '.-';
             document.getElementById('total-expense').textContent = expense.toLocaleString() + '.-';
@@ -479,11 +516,19 @@
         }
 
         function renderChart() {
+            const now = new Date();
+            const currentMonth = now.getMonth();
+            const currentYear = now.getFullYear();
+
             let income = 0, expense = 0;
             transactions.forEach(item => {
-                if (item.type === 'income') income += item.amount;
-                else expense += item.amount;
+                const itemDate = new Date(item.timestamp);
+                if (itemDate.getMonth() === currentMonth && itemDate.getFullYear() === currentYear) {
+                    if (item.type === 'income') income += item.amount;
+                    else expense += item.amount;
+                }
             });
+
             const ctx = document.getElementById('expenseChart').getContext('2d');
             if (myChart) myChart.destroy();
             myChart = new Chart(ctx, {
@@ -533,40 +578,61 @@
             }
         }
 
+        function changeMonth(direction) {
+            calendarViewDate.setMonth(calendarViewDate.getMonth() + direction);
+            renderCalendar();
+        }
+
         function renderCalendar() {
             const grid = document.getElementById('calendar-grid');
-            const date = new Date();
-            const year = date.getFullYear();
-            const month = date.getMonth();
+            const year = calendarViewDate.getFullYear();
+            const month = calendarViewDate.getMonth();
             
-            // เปลี่ยนชื่อเดือนไทย
             const thaiMonths = ["มกราคม","กุมภาพันธ์","มีนาคม","เมษายน","พฤษภาคม","มิถุนายน","กรกฎาคม","สิงหาคม","กันยายน","ตุลาคม","พฤศจิกายน","ธันวาคม"];
-            document.getElementById('current-month').textContent = `${thaiMonths[month]} ${year}`;
+            document.getElementById('current-month-label').textContent = `${thaiMonths[month]} ${year}`;
+            document.getElementById('summary-month-title').textContent = `สรุปยอดประจำเดือน: ${thaiMonths[month]} ${year}`;
 
             const firstDay = new Date(year, month, 1).getDay();
             const daysInMonth = new Date(year, month + 1, 0).getDate();
 
             grid.innerHTML = '';
             
-            // ช่องว่างต้นเดือน
             for(let i = 0; i < firstDay; i++) {
                 grid.innerHTML += `<div></div>`;
             }
 
-            // วันที่
+            // คำนวณสรุปยอดประจำเดือนที่กำลังเปิดดูในปฏิทิน
+            let mIncome = 0, mExpense = 0;
+
             for(let day = 1; day <= daysInMonth; day++) {
-                // เช็กว่าวันนั้นมีการจดบันทึกหรือไม่
-                const hasData = transactions.some(t => new Date(t.timestamp).getDate() === day && new Date(t.timestamp).getMonth() === month);
+                const hasData = transactions.some(t => {
+                    const tDate = new Date(t.timestamp);
+                    return tDate.getDate() === day && tDate.getMonth() === month && tDate.getFullYear() === year;
+                });
+
+                // รวมยอดเฉพาะเดือนนั้นๆ
+                transactions.forEach(t => {
+                    const tDate = new Date(t.timestamp);
+                    if(tDate.getDate() === day && tDate.getMonth() === month && tDate.getFullYear() === year) {
+                        if(t.type === 'income') mIncome += t.amount;
+                        else mExpense += t.amount;
+                    }
+                });
+
                 const classStr = hasData ? 'border-2 border-[#ffb6c1] bg-[#fff0f5] text-[#d87093] font-bold shadow-sm' : 'border border-[#f3d9ce] bg-white text-[#8c7894]';
                 
-                grid.innerHTML += `<div onclick="filterByDate(${day})" class="calendar-day p-1 rounded-lg cursor-pointer flex items-center justify-center h-8 ${classStr}">${day}</div>`;
+                grid.innerHTML += `<div onclick="filterByDate(${year}, ${month}, ${day})" class="calendar-day p-1 rounded-lg cursor-pointer flex items-center justify-center h-8 ${classStr}">${day}</div>`;
             }
+
+            // แสดงตัวเลขสรุปใต้ปฏิทินตามที่สั่ง
+            document.getElementById('sum-inc').textContent = mIncome.toLocaleString() + '.-';
+            document.getElementById('sum-exp').textContent = mExpense.toLocaleString() + '.-';
+            document.getElementById('sum-bal').textContent = (mIncome - mExpense).toLocaleString() + '.-';
         }
 
-        function filterByDate(day) {
-            selectedFilterDate = day;
+        function filterByDate(year, month, day) {
+            selectedFilterDate = new Date(year, month, day);
             renderTransactions();
-            // เลื่อนจอลงมาให้ดูรายการ
             document.getElementById('transaction-list').scrollIntoView({ behavior: 'smooth' });
         }
 
