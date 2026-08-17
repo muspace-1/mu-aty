@@ -9,21 +9,64 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        body { font-family: 'Kanit', sans-serif; background-color: #fcf8f2; background-image: radial-gradient(#e6d5c3 1px, transparent 1px); background-size: 20px 20px; color: #5a4a5e; min-height: 100vh; }
-        .card-notebook { background: #ffffff; border-radius: 2rem; box-shadow: 0 10px 25px rgba(244, 180, 217, 0.2); border: 3px solid #fce4ec; }
-        .btn-pastel-pink { background: linear-gradient(135deg, #ffb6c1, #ff9bb3); color: white; transition: all 0.2s; }
-        .btn-pastel-pink:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(255, 182, 193, 0.4); }
-        @keyframes float { 0% { transform: translateY(0px) rotate(0deg); } 50% { transform: translateY(-6px) rotate(3deg); } 100% { transform: translateY(0px) rotate(0deg); } }
-        .animate-float { animation: float 3s ease-in-out infinite; }
+        body { 
+            font-family: 'Kanit', sans-serif; 
+            background-color: #fcf8f2; 
+            background-image: radial-gradient(#e6d5c3 1px, transparent 1px); 
+            background-size: 20px 20px; 
+            color: #5a4a5e; 
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        .card-notebook { 
+            background: #ffffff; 
+            border-radius: 2rem; 
+            box-shadow: 0 10px 25px rgba(244, 180, 217, 0.2); 
+            border: 3px solid #fce4ec; 
+            position: relative;
+            z-index: 10;
+        }
+
+        .btn-pastel-pink { 
+            background: linear-gradient(135deg, #ffb6c1, #ff9bb3); 
+            color: white; 
+            transition: all 0.2s; 
+        }
+        .btn-pastel-pink:hover { 
+            transform: translateY(-2px); 
+            box-shadow: 0 4px 12px rgba(255, 182, 193, 0.4); 
+        }
+
+        /* แอนิเมชันหัวใจลอยละล่องแบบไม่รกตา */
+        @keyframes float-heart {
+            0% { transform: translateY(0px) scale(1); opacity: 0.6; }
+            50% { transform: translateY(-15px) scale(1.1); opacity: 1; }
+            100% { transform: translateY(0px) scale(1); opacity: 0.6; }
+        }
+        .floating-heart-1 { position: absolute; top: 15px; right: 20px; animation: float-heart 3s ease-in-out infinite; font-size: 1.2rem; pointer-events: none; z-index: 5; }
+        .floating-heart-2 { position: absolute; bottom: 20px; left: 25px; animation: float-heart 4s ease-in-out infinite; font-size: 1rem; pointer-events: none; z-index: 5; animation-delay: 1s; }
+        .floating-heart-3 { position: absolute; top: 50%; right: 10px; animation: float-heart 3.5s ease-in-out infinite; font-size: 0.9rem; pointer-events: none; z-index: 5; animation-delay: 2s; }
+
         input:focus, select:focus { outline: none; border-color: #ffb6c1 !important; }
+        
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #fcf8f2; }
+        ::-webkit-scrollbar-thumb { background: #ffb6c1; border-radius: 3px; }
     </style>
 </head>
 <body class="py-8 px-4 flex items-center justify-center min-h-screen">
 
-    <!-- หน้าล็อกอิน (แสดงเมื่อยังไม่เข้าสู่ระบบ) -->
-    <div id="login-section" class="max-w-sm w-full card-notebook p-8 text-center relative">
-        <div class="absolute -top-6 left-1/2 transform -translate-x-1/2 text-4xl animate-float">🐱💖✨</div>
-        <h2 class="text-xl font-bold text-[#d87093] mt-4 mb-1">AhTao MuSpace Login</h2>
+    <!-- พื้นหลังมีหัวใจลอยเบาๆ รอบจอแบบไม่รก -->
+    <div class="floating-heart-1">💖</div>
+    <div class="floating-heart-2">🌸</div>
+    <div class="floating-heart-3">✨</div>
+
+    <!-- หน้าล็อกอิน -->
+    <div id="login-section" class="max-w-sm w-full card-notebook p-8 text-center">
+        <div class="text-4xl mb-2">🐱💖</div>
+        <h2 class="text-xl font-bold text-[#d87093] mb-1">AhTao MuSpace</h2>
         <p class="text-xs text-[#8c7894] mb-6">กรอกรหัสลับความรวยก่อนเข้าใช้งานนะจ๊ะ 🌸</p>
         
         <form onsubmit="handleLogin(event)" class="space-y-4 text-left">
@@ -32,7 +75,7 @@
                 <input type="text" id="username" required placeholder="ahtao" class="w-full p-3 text-sm bg-[#faf5f0] border-2 border-[#f3d9ce] rounded-xl">
             </div>
             <div>
-                <label class="block text-xs font-bold text-[#8c7894] mb-1">รหัสผ่าน (Password - 6 หลัก)</label>
+                <label class="block text-xs font-bold text-[#8c7894] mb-1">รหัสผ่าน (Password)</label>
                 <input type="password" id="password" required placeholder="123456" class="w-full p-3 text-sm bg-[#faf5f0] border-2 border-[#f3d9ce] rounded-xl">
             </div>
             <div id="login-error" class="text-xs text-red-400 text-center hidden">ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้องจ้า 🥲</div>
@@ -42,13 +85,13 @@
         </form>
     </div>
 
-    <!-- หน้าแดชบอร์ดสมุดบัญชี (แสดงเมื่อเข้าสู่ระบบแล้ว) -->
-    <div id="app-section" class="max-w-md w-full mx-auto relative hidden">
+    <!-- หน้าแดชบอร์ดหลัก (ซ่อนไว้จนกว่าจะล็อกอิน) -->
+    <div id="app-section" class="max-w-md w-full mx-auto relative hidden space-y-6">
         
-        <!-- กรอบชื่อร้านแบบตั้งตรงสวยๆ (ไม่โดนตัดขอบ) -->
-        <div class="bg-[#ffb6c1] text-white p-6 rounded-[2rem] shadow-lg mb-6 text-center relative">
-            <div class="absolute top-3 left-4 text-2xl animate-float">🐱✨</div>
-            <div class="absolute bottom-3 right-4 text-2xl animate-float" style="animation-delay: 1.5s;">💖</div>
+        <!-- กรอบชื่อร้านตั้งตรงสวยงาม พร้อมหัวใจลอยประดับ -->
+        <div class="bg-[#ffb6c1] text-white p-6 rounded-[2rem] shadow-lg text-center relative overflow-hidden">
+            <div class="floating-heart-1">💖</div>
+            <div class="floating-heart-2">✨</div>
             <h1 class="text-2xl font-bold tracking-wide">AhTao MuSpace</h1>
             <p class="text-xs opacity-90 font-medium italic mt-1">“ ยิ่งเรารักษาเงิน เงินก็ยิ่งรักเรานะคนเก่ง 🌸 ”</p>
             <button onclick="handleLogout()" class="mt-3 text-[11px] bg-white text-[#d87093] px-3 py-1 rounded-full font-bold shadow-sm hover:bg-[#fff0f5]">
@@ -56,8 +99,24 @@
             </button>
         </div>
 
+        <!-- หลอดเป้าหมายเงินเก็บ (Saving Goals) -->
+        <div class="card-notebook p-5">
+            <div class="flex justify-between items-center mb-2">
+                <h3 class="text-xs font-bold text-[#d87093]"><i class="fa-solid fa-bullseye"></i> เป้าหมายเงินเก็บ</h3>
+                <button onclick="editGoal()" class="text-[10px] text-[#8c7894] underline hover:text-[#ff69b4]">ตั้งค่าเป้าหมาย</button>
+            </div>
+            <div class="text-sm font-bold text-[#5a4a5e] mb-1" id="goal-title">เป้าหมาย: ทริปเที่ยวคาเฟ่ 5,000 บาท</div>
+            <div class="w-full bg-[#f3d9ce] rounded-full h-3 overflow-hidden mb-1">
+                <div id="goal-progress-bar" class="bg-gradient-to-r from-[#ffb6c1] to-[#ff69b4] h-3 rounded-full transition-all duration-500" style="width: 0%"></div>
+            </div>
+            <div class="flex justify-between text-[10px] text-[#8c7894]">
+                <span id="goal-current">เก็บได้: 0.-</span>
+                <span id="goal-target">เป้าหมาย: 5,000.-</span>
+            </div>
+        </div>
+
         <!-- กล่องสรุปยอดรวม -->
-        <div class="grid grid-cols-3 gap-3 mb-6">
+        <div class="grid grid-cols-3 gap-3">
             <div class="card-notebook p-3 text-center bg-[#fff0f5]">
                 <div class="text-[11px] text-[#d87093] font-bold mb-1">รายรับรวม</div>
                 <div id="total-income" class="text-md font-bold text-[#ff69b4]">0.-</div>
@@ -72,8 +131,8 @@
             </div>
         </div>
 
-        <!-- ฟอร์มบันทึกรายการ -->
-        <div class="card-notebook p-5 mb-6">
+        <!-- ฟอร์มบันทึกรายการ + เพิ่มหมวดหมู่เองได้ -->
+        <div class="card-notebook p-5">
             <h2 class="text-md font-bold text-[#d87093] mb-3 flex items-center gap-2">
                 <i class="fa-solid fa-pen-fancy"></i> จดบันทึกวันนี้
             </h2>
@@ -91,17 +150,16 @@
                 </div>
                 <div>
                     <label class="block text-xs font-bold text-[#8c7894] mb-1">ชื่อรายการ</label>
-                    <input type="text" id="desc" required placeholder="เช่น ค่าชาไข่มุก, เงินเดือนออก" class="w-full p-2.5 text-sm bg-[#faf5f0] border-2 border-[#f3d9ce] rounded-xl">
+                    <input type="text" id="desc" required placeholder="เช่น ชานมไข่มุก, ค่าส่งของ" class="w-full p-2.5 text-sm bg-[#faf5f0] border-2 border-[#f3d9ce] rounded-xl">
                 </div>
                 <div class="grid grid-cols-2 gap-3">
                     <div>
-                        <label class="block text-xs font-bold text-[#8c7894] mb-1">หมวดหมู่</label>
+                        <div class="flex justify-between items-center mb-1">
+                            <label class="text-xs font-bold text-[#8c7894]">หมวดหมู่</label>
+                            <span onclick="addCustomCategory()" class="text-[10px] text-[#ff69b4] cursor-pointer underline">+ เพิ่มหมวด</span>
+                        </div>
                         <select id="category" class="w-full p-2.5 text-sm bg-[#faf5f0] border-2 border-[#f3d9ce] rounded-xl">
-                            <option value="ของกิน 🍔">ของกิน 🍔</option>
-                            <option value="เดินทาง 🚗">เดินทาง 🚗</option>
-                            <option value="ช้อปปิ้ง 🛍️">ช้อปปิ้ง 🛍️</option>
-                            <option value="รายรับ 💵">รายรับ 💵</option>
-                            <option value="อื่นๆ ✨">อื่นๆ ✨</option>
+                            <!-- โหลดผ่าน JS -->
                         </select>
                     </div>
                     <div>
@@ -116,7 +174,7 @@
         </div>
 
         <!-- กราฟสรุปยอด -->
-        <div class="card-notebook p-5 mb-6">
+        <div class="card-notebook p-5">
             <h2 class="text-md font-bold text-[#d87093] mb-3 flex items-center gap-2">
                 <i class="fa-solid fa-chart-pie"></i> สัดส่วนรายรับ-รายจ่าย
             </h2>
@@ -125,24 +183,37 @@
             </div>
         </div>
 
-        <!-- รายการล่าสุด -->
-        <div class="card-notebook p-5 mb-12">
+        <!-- ค้นหา กรองข้อมูล และประวัติรายการ -->
+        <div class="card-notebook p-5 pb-10">
             <div class="flex justify-between items-center mb-3">
                 <h2 class="text-md font-bold text-[#d87093] flex items-center gap-2">
                     <i class="fa-solid fa-list-ul"></i> ประวัติรายการ
                 </h2>
-                <button onclick="clearData()" class="text-xs text-red-400 hover:text-red-600 font-bold">ล้างข้อมูลทั้งหมด</button>
+                <div class="flex gap-2">
+                    <button onclick="exportData()" title="สำรองข้อมูล" class="text-xs text-[#4682b4] bg-blue-50 px-2 py-1 rounded-lg font-bold"><i class="fa-solid fa-download"></i></button>
+                    <button onclick="clearData()" title="ล้างข้อมูล" class="text-xs text-red-400 bg-red-50 px-2 py-1 rounded-lg font-bold"><i class="fa-solid fa-trash"></i></button>
+                </div>
             </div>
+
+            <!-- ช่องค้นหา & กรอง -->
+            <div class="grid grid-cols-2 gap-2 mb-3">
+                <input type="text" id="search-box" oninput="renderTransactions()" placeholder="🔍 ค้นหาชื่อรายการ..." class="p-2 text-xs bg-[#faf5f0] border-2 border-[#f3d9ce] rounded-xl">
+                <select id="filter-box" onchange="renderTransactions()" class="p-2 text-xs bg-[#faf5f0] border-2 border-[#f3d9ce] rounded-xl">
+                    <option value="all">ทั้งหมด</option>
+                    <option value="income">เฉพาะรายรับ</option>
+                    <option value="expense">เฉพาะรายจ่าย</option>
+                </select>
+            </div>
+
             <div id="transaction-list" class="space-y-2 max-h-60 overflow-y-auto pr-1"></div>
         </div>
 
     </div>
 
     <script>
-        // ระบบล็อกอินสเกลความปลอดภัย
+        // ระบบล็อกอิน
         function checkAuth() {
-            const isLogged = localStorage.getItem('ahtao_logged_in');
-            if (isLogged === 'true') {
+            if (localStorage.getItem('ahtao_logged_in') === 'true') {
                 document.getElementById('login-section').classList.add('hidden');
                 document.getElementById('app-section').classList.remove('hidden');
                 init();
@@ -157,7 +228,6 @@
             const u = document.getElementById('username').value.trim();
             const p = document.getElementById('password').value.trim();
             const err = document.getElementById('login-error');
-
             if (u === 'ahtao' && p === '123456') {
                 localStorage.setItem('ahtao_logged_in', 'true');
                 err.classList.add('hidden');
@@ -172,13 +242,57 @@
             checkAuth();
         }
 
+        // โครงสร้างข้อมูล & หมวดหมู่
         let transactions = JSON.parse(localStorage.getItem('ahtao_acc_data')) || [];
+        let categories = JSON.parse(localStorage.getItem('ahtao_categories')) || ['ของกิน 🍔', 'เดินทาง 🚗', 'ช้อปปิ้ง 🛍️', 'รายรับ 💵', 'อื่นๆ ✨'];
+        let goalData = JSON.parse(localStorage.getItem('ahtao_goal')) || { title: 'เป้าหมายเงินเก็บ', target: 5000 };
         let myChart = null;
 
         function init() {
+            renderCategories();
+            renderGoal();
             renderTransactions();
             updateSummary();
             renderChart();
+        }
+
+        function renderCategories() {
+            const select = document.getElementById('category');
+            select.innerHTML = categories.map(c => `<option value="${c}">${c}</option>`).join('');
+        }
+
+        function addCustomCategory() {
+            const newCat = prompt("พิมพ์ชื่อหมวดหมู่ใหม่ที่ต้องการ (เช่น ค่าขนมแมวเลีย 🐱):");
+            if (newCat && newCat.trim() !== '') {
+                if (!categories.includes(newCat)) {
+                    categories.push(newCat);
+                    localStorage.setItem('ahtao_categories', JSON.stringify(categories));
+                    renderCategories();
+                    document.getElementById('category').value = newCat;
+                }
+            }
+        }
+
+        function editGoal() {
+            const newTitle = prompt("ชื่อเป้าหมายเงินเก็บ:", goalData.title);
+            const newTarget = parseFloat(prompt("จำนวนเงินเป้าหมาย (บาท):", goalData.target));
+            if (newTitle && !isNaN(newTarget)) {
+                goalData = { title: newTitle, target: newTarget };
+                localStorage.setItem('ahtao_goal', JSON.stringify(goalData));
+                renderGoal();
+            }
+        }
+
+        function renderGoal() {
+            let income = 0, expense = 0;
+            transactions.forEach(i => { if(i.type === 'income') income += i.amount; else expense += i.amount; });
+            let balance = income - expense;
+            let percent = Math.min(Math.max((balance / goalData.target) * 100, 0), 100);
+
+            document.getElementById('goal-title').textContent = `เป้าหมาย: ${goalData.title} (${goalData.target.toLocaleString()}.-)`;
+            document.getElementById('goal-current').textContent = `เก็บได้: ${balance.toLocaleString()}.-`;
+            document.getElementById('goal-target').textContent = `เป้าหมาย: ${goalData.target.toLocaleString()}.-`;
+            document.getElementById('goal-progress-bar').style.width = percent + '%';
         }
 
         function addTransaction(e) {
@@ -214,21 +328,42 @@
             }
         }
 
+        function exportData() {
+            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(transactions));
+            const dlAnchor = document.createElement('a');
+            dlAnchor.setAttribute("href", dataStr);
+            dlAnchor.setAttribute("download", "ahtao_accounting_backup.json");
+            document.body.appendChild(dlAnchor);
+            dlAnchor.click();
+            dlAnchor.remove();
+        }
+
         function saveAndRefresh() {
             localStorage.setItem('ahtao_acc_data', JSON.stringify(transactions));
             renderTransactions();
             updateSummary();
             renderChart();
+            renderGoal();
         }
 
         function renderTransactions() {
+            const searchKeyword = document.getElementById('search-box').value.toLowerCase();
+            const filterType = document.getElementById('filter-box').value;
             const listEl = document.getElementById('transaction-list');
-            if (transactions.length === 0) {
-                listEl.innerHTML = `<p class="text-center text-xs text-gray-400 py-4">ยังไม่มีรายการบันทึก เริ่มจดกันเลย! 🌸</p>`;
+
+            let filtered = transactions.filter(item => {
+                let matchSearch = item.desc.toLowerCase().includes(searchKeyword) || item.category.toLowerCase().includes(searchKeyword);
+                let matchFilter = filterType === 'all' || item.type === filterType;
+                return matchSearch && matchFilter;
+            });
+
+            if (filtered.length === 0) {
+                listEl.innerHTML = `<p class="text-center text-xs text-gray-400 py-4">ไม่พบรายการค้นหาค่ะ 🌸</p>`;
                 return;
             }
+
             let html = '';
-            transactions.forEach(item => {
+            filtered.forEach(item => {
                 const isIncome = item.type === 'income';
                 html += `
                     <div class="flex justify-between items-center p-2.5 ${isIncome ? 'bg-[#fff0f5]' : 'bg-[#f0f8ff]'} rounded-xl border border-[#fce4ec]">
@@ -287,7 +422,6 @@
             });
         }
 
-        // เช็กสิทธิ์ล็อกอินตอนเปิดเว็บ
         checkAuth();
     </script>
 </body>
