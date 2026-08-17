@@ -1,4 +1,6 @@
-<!DOCTYPE html>
+export default {
+  async fetch(request, env, ctx) {
+    const html = `<!DOCTYPE html>
 <html lang="th">
 <head>
     <meta charset="UTF-8">
@@ -76,7 +78,6 @@
     </div>
 
     <script>
-        // ระบบกันพัง: เช็กข้อมูลก่อนดึง
         let transactions = [];
         try {
             const saved = localStorage.getItem('ahtao_acc_data');
@@ -86,8 +87,6 @@
         function addTransaction(e) {
             e.preventDefault();
             const amount = parseFloat(document.getElementById('amount').value);
-            
-            // กันพัง: ตรวจสอบจำนวนเงิน
             if (isNaN(amount) || amount <= 0) { alert("กรุณาระบุจำนวนเงินที่ถูกต้องค่ะ 🌸"); return; }
 
             const newItem = {
@@ -117,16 +116,16 @@
             transactions.forEach(item => {
                 if(item.type === 'income') income += item.amount; else expense += item.amount;
                 
-                html += `
-                    <div class="flex justify-between items-center p-3 rounded-xl border border-pink-50 ${item.type === 'income' ? 'bg-pink-50' : 'bg-blue-50'}">
+                html += \`
+                    <div class="flex justify-between items-center p-3 rounded-xl border border-pink-50 \${item.type === 'income' ? 'bg-pink-50' : 'bg-blue-50'}">
                         <div class="text-xs">
-                            <span class="font-bold text-[#5a4a5e]">${item.desc}</span><br>
-                            <span class="text-[10px] opacity-70">${item.category} • ${item.date}</span>
+                            <span class="font-bold text-[#5a4a5e]">\${item.desc}</span><br>
+                            <span class="text-[10px] opacity-75">\${item.category} • \${item.date}</span>
                         </div>
-                        <div class="text-sm font-bold ${item.type === 'income' ? 'text-pink-500' : 'text-blue-500'}">
-                            ${item.type === 'income' ? '+' : '-'}${item.amount.toLocaleString()}
+                        <div class="text-sm font-bold \${item.type === 'income' ? 'text-pink-500' : 'text-blue-500'}">
+                            \${item.type === 'income' ? '+' : '-'}\${item.amount.toLocaleString()}
                         </div>
-                    </div>`;
+                    </div>\`;
             });
             listEl.innerHTML = html || '<p class="text-center text-xs opacity-50">ยังไม่มีรายการค่ะ 🐱</p>';
             
@@ -137,4 +136,10 @@
         render();
     </script>
 </body>
-</html>
+</html>`;
+
+    return new Response(html, {
+      headers: { "Content-Type": "text/html;charset=UTF-8" },
+    });
+  },
+};
